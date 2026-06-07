@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: agile-athletes-form-coach
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: MAX_VIDEO_SIZE_MB
+        value: "50"
+      - key: SAMPLE_EVERY_N_FRAMES
+        value: "2"
+    disk:
+      name: metrics
+      mountPath: /app/data/metrics
+      sizeGB: 1
