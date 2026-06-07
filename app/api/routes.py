@@ -2,7 +2,14 @@ import logging
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
-from app.api.schemas import AnalyzeFormResponse, FormIssueResponse, HealthResponse, RootResponse
+from app.api.schemas import (
+    AnalyzeFormResponse,
+    ExerciseCatalogItem,
+    ExerciseCatalogResponse,
+    FormIssueResponse,
+    HealthResponse,
+    RootResponse,
+)
 from app.core.config import get_settings
 from app.core.dependencies import get_exercise_registry, get_form_analyzer_service
 from app.exercises.registry import ExerciseRegistry
@@ -22,10 +29,28 @@ def root(registry: ExerciseRegistry = Depends(get_exercise_registry)) -> RootRes
         description="AI Form Coach API — upload exercise videos for pose analysis and form scoring.",
         endpoints={
             "health": "/health",
+            "exercises": "/exercises",
             "analyze_form": "POST /analyze-form",
             "docs": "/docs",
             "openapi": "/openapi.json",
         },
+    )
+
+
+@router.get("/exercises", response_model=ExerciseCatalogResponse)
+def list_exercises(registry: ExerciseRegistry = Depends(get_exercise_registry)) -> ExerciseCatalogResponse:
+    """
+    Return the full exercise catalog.
+
+    Edit app/data/exercises.json to add exercises to the app UI.
+    Set available=true and implement an analyzer to enable form scoring.
+    """
+    catalog = registry.catalog
+    return ExerciseCatalogResponse(
+        exercises=[ExerciseCatalogItem(**e.to_dict()) for e in catalog.list_all()],
+        coach_enabled=registry.list_exercises(),
+        specialized=registry.list_specialized(),
+        coach_launch=registry.list_coach_launch(),
     )
 
 

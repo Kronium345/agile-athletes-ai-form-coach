@@ -25,3 +25,19 @@ class HealthResponse(BaseModel):
     status: str
     version: str
     exercises: list[str]
+
+
+class ExerciseCatalogItem(BaseModel):
+    id: str
+    name: str
+    description: str
+    muscle_groups: list[str]
+    filming_tip: str
+    available: bool
+
+
+class ExerciseCatalogResponse(BaseModel):
+    exercises: list[ExerciseCatalogItem]
+    coach_enabled: list[str]
+    specialized: list[str]
+    coach_launch: list[str]

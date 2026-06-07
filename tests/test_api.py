@@ -55,7 +55,22 @@ class TestHealthEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "ok"
-        assert "squat" in data["exercises"]
+        assert "back_squat" in data["exercises"]
+        assert "deadlift" in data["exercises"]
+
+
+class TestExercisesEndpoint:
+    def test_exercises_returns_catalog(self, client: TestClient) -> None:
+        response = client.get("/exercises")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["exercises"]) >= 120
+        assert "back_squat" in data["coach_enabled"]
+        assert "back_squat" in data["specialized"]
+        bench = next(e for e in data["exercises"] if e["id"] == "bench_press")
+        assert bench["available"] is True
+        pec = next(e for e in data["exercises"] if e["id"] == "pec_deck")
+        assert pec["available"] is False
 
 
 class TestAnalyzeFormEndpoint:
@@ -75,13 +90,14 @@ class TestAnalyzeFormEndpoint:
         assert data["joint_angles"]["left_knee"] == 92.0
         mock_analyzer_service.analyze_video.assert_called_once()
 
-    def test_rejects_unsupported_exercise(self, client: TestClient) -> None:
+    def test_rejects_unknown_exercise(self, client: TestClient) -> None:
         response = client.post(
             "/analyze-form",
             files={"video": ("squat.mp4", b"content", "video/mp4")},
-            data={"exercise": "deadlift"},
+            data={"exercise": "unknown_lift"},
         )
         assert response.status_code == 400
+        assert "not in the catalog" in response.json()["detail"]
 
     def test_rejects_empty_video(self, client: TestClient) -> None:
         response = client.post(

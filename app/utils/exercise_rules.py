@@ -310,9 +310,5 @@ def aggregate_issues(frame_metrics_list: list[FrameMetrics]) -> list[FormIssue]:
     return issues
 
 
-def calculate_form_score(issues: list[FormIssue]) -> int:
-    """Start at 100 and subtract weighted penalties."""
-    score = 100.0
-    for issue in issues:
-        score -= issue.penalty
-    return max(0, min(100, int(round(score))))
+# Re-export for backward compatibility
+from app.utils.scoring import calculate_form_score  # noqa: F401)

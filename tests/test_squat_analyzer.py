@@ -32,13 +32,13 @@ def _make_squat_frame(hip_y: float = 0.55, knee_x_offset: float = 0.0) -> FrameL
 
 class TestSquatAnalyzer:
     def test_analyzer_name(self) -> None:
-        assert SquatAnalyzer().name == "squat"
+        assert SquatAnalyzer().name == "back_squat"
 
     def test_analyze_returns_result_structure(self) -> None:
         frames = [_make_squat_frame() for _ in range(5)]
         result = SquatAnalyzer().analyze(frames)
 
-        assert result.exercise == "squat"
+        assert result.exercise == "back_squat"
         assert 0 <= result.score <= 100
         assert isinstance(result.joint_angles, dict)
         assert len(result.frame_metrics) == 5
