@@ -90,6 +90,12 @@ async def analyze_form(
             status_code=503,
             detail="Pose detection model not available. Contact administrator.",
         ) from exc
+    except OSError as exc:
+        logger.error("MediaPipe failed to load: %s", exc)
+        raise HTTPException(
+            status_code=503,
+            detail="Pose detection engine unavailable. Server may need redeploying.",
+        ) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
