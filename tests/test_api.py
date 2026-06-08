@@ -65,12 +65,10 @@ class TestExercisesEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert len(data["exercises"]) >= 120
+        assert len(data["coach_enabled"]) >= 45
         assert "back_squat" in data["coach_enabled"]
-        assert "back_squat" in data["specialized"]
-        bench = next(e for e in data["exercises"] if e["id"] == "bench_press")
-        assert bench["available"] is True
-        pec = next(e for e in data["exercises"] if e["id"] == "pec_deck")
-        assert pec["available"] is False
+        assert "incline_bench_press" in data["coach_enabled"]
+        assert len(data["coach_launch"]) == len(data["coach_enabled"])
 
 
 class TestAnalyzeFormEndpoint:

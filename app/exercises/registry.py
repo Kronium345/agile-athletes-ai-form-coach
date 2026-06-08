@@ -12,6 +12,7 @@ SQUAT_EXERCISE_IDS = frozenset(
         "back_squat",
         "front_squat",
         "goblet_squat",
+        "kettlebell_goblet_squat",
         "box_squat",
         "pause_squat",
         "overhead_squat",
@@ -19,6 +20,9 @@ SQUAT_EXERCISE_IDS = frozenset(
         "safety_bar_squat",
         "hack_squat",
         "bodyweight_squat",
+        "pistol_squat",
+        "split_squat",
+        "jump_squat",
     }
 )
 
@@ -82,18 +86,8 @@ class ExerciseRegistry:
         )
 
     def list_coach_launch(self) -> list[str]:
-        """Core MVP exercises shown on the primary AI Form Coach screen."""
-        launch = [
-            "back_squat",
-            "front_squat",
-            "deadlift",
-            "romanian_deadlift",
-            "bench_press",
-            "overhead_press",
-            "pull_up",
-        ]
-        available = set(self.list_exercises())
-        return [eid for eid in launch if eid in available]
+        """Deprecated alias — returns all coach-enabled exercises."""
+        return self.list_exercises()
 
     @property
     def catalog(self) -> ExerciseCatalog:
